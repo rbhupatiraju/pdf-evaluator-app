@@ -1,0 +1,204 @@
+import React, { useState } from 'react';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  IconButton,
+  Tooltip,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import CheckForm from './CheckForm';
+
+interface Check {
+  id: string;
+  name: string;
+  description: string;
+  detailedPrompt: string;
+  associatedSections: string[];
+  lastUpdatedDate: string;
+}
+
+const sampleChecks: Check[] = [
+  {
+    id: '1',
+    name: 'Page Margins',
+    description: 'Verify that all page margins are set to 1 inch on all sides of the document. This includes top, bottom, left, and right margins. The margins should be consistent throughout the entire document and should not vary between sections.',
+    detailedPrompt: 'Check all pages of the document for consistent 1-inch margins. Verify that no content extends beyond the margins and that the layout is uniform throughout.',
+    associatedSections: ['Document Formatting', 'Page Layout'],
+    lastUpdatedDate: '2024-03-20',
+  },
+  {
+    id: '2',
+    name: 'Executive Summary',
+    description: 'Check if executive summary is present and properly formatted. The summary should include key findings, recommendations, and a brief overview of the document. It should be concise yet comprehensive, providing a clear snapshot of the main points covered in the document.',
+    detailedPrompt: 'Review the executive summary section for completeness and proper formatting. Ensure it captures the main points of the document and follows the standard executive summary format.',
+    associatedSections: ['Content Review', 'Document Structure'],
+    lastUpdatedDate: '2024-03-19',
+  },
+  {
+    id: '3',
+    name: 'Financial Data',
+    description: 'Verify all financial data is accurate and properly formatted. This includes checking numerical values, currency symbols, decimal places, and date formats. Ensure that all calculations are correct and that the data is presented in a clear, consistent manner throughout the document.',
+    detailedPrompt: 'Examine all financial figures, tables, and calculations in the document. Verify the accuracy of numbers, proper use of currency symbols, and consistent decimal places. Check that all calculations are correct and properly referenced.',
+    associatedSections: ['Content Review', 'Data Validation'],
+    lastUpdatedDate: '2024-03-18',
+  },
+  {
+    id: '4',
+    name: 'Document Headers',
+    description: 'Ensure that all document headers are properly formatted and consistent throughout the document. Headers should include the document title, section numbers, and page numbers. Check that the header style matches the document template and that there are no formatting inconsistencies.',
+    detailedPrompt: 'Review all headers in the document for consistency in style, formatting, and content. Verify that headers include the correct document title, section numbers, and page numbers. Check that the header style matches the document template.',
+    associatedSections: ['Document Formatting', 'Page Layout'],
+    lastUpdatedDate: '2024-03-17',
+  },
+  {
+    id: '5',
+    name: 'Table Formatting',
+    description: 'Review all tables in the document for proper formatting and consistency. This includes checking column widths, row heights, cell padding, borders, and text alignment. Tables should be properly numbered and referenced in the text, with clear headers and appropriate spacing.',
+    detailedPrompt: 'Examine all tables in the document for proper formatting and consistency. Check column widths, row heights, cell padding, borders, and text alignment. Verify that tables are properly numbered and referenced in the text.',
+    associatedSections: ['Document Formatting', 'Content Review'],
+    lastUpdatedDate: '2024-03-16',
+  }
+];
+
+const ChecksList: React.FC = () => {
+  const [checks, setChecks] = useState<Check[]>(sampleChecks);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingCheck, setEditingCheck] = useState<Check | undefined>();
+
+  const handleEdit = (id: string) => {
+    const check = checks.find(c => c.id === id);
+    setEditingCheck(check);
+    setFormOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    setChecks(checks.filter(check => check.id !== id));
+  };
+
+  const handleAdd = () => {
+    setEditingCheck(undefined);
+    setFormOpen(true);
+  };
+
+  const handleSave = (checkData: Omit<Check, 'id' | 'lastUpdatedDate'>) => {
+    if (editingCheck) {
+      // Update existing check
+      setChecks(checks.map(check => 
+        check.id === editingCheck.id 
+          ? { ...check, ...checkData, lastUpdatedDate: new Date().toISOString().split('T')[0] }
+          : check
+      ));
+    } else {
+      // Add new check
+      const newCheck: Check = {
+        id: Date.now().toString(),
+        ...checkData,
+        lastUpdatedDate: new Date().toISOString().split('T')[0],
+      };
+      setChecks([...checks, newCheck]);
+    }
+    setFormOpen(false);
+  };
+
+  return (
+    <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h6">
+          Checks List
+        </Typography>
+        <Tooltip title="Add Check">
+          <IconButton
+            size="small"
+            onClick={handleAdd}
+            sx={{
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
+          >
+            <AddIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Box>
+
+      <TableContainer component={Paper} sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Table sx={{ minWidth: 650 }} aria-label="checks list">
+          <TableHead>
+            <TableRow>
+              <TableCell>Check Name</TableCell>
+              <TableCell sx={{ maxWidth: '300px' }}>Description</TableCell>
+              <TableCell>Associated Sections</TableCell>
+              <TableCell>Last Updated</TableCell>
+              <TableCell align="center" sx={{ width: '100px' }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {checks.map((check) => (
+              <TableRow key={check.id}>
+                <TableCell>{check.name}</TableCell>
+                <TableCell 
+                  sx={{ 
+                    maxWidth: '300px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
+                  {check.description}
+                </TableCell>
+                <TableCell>{check.associatedSections.join(', ')}</TableCell>
+                <TableCell>{check.lastUpdatedDate}</TableCell>
+                <TableCell align="center">
+                  <Tooltip title="Edit">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleEdit(check.id)}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        },
+                      }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDelete(check.id)}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        },
+                      }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <CheckForm
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onSave={handleSave}
+        initialData={editingCheck}
+      />
+    </Box>
+  );
+};
+
+export default ChecksList; 
