@@ -1,20 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import React, { useEffect, useRef, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import { Box, Typography, Button, AppBar, Toolbar, IconButton } from '@mui/material';
-import PDFPanel from './PDFPanel';
-import CommentaryPanel from './CommentaryPanel';
 import { useNavigate } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CommentaryPanel from './CommentaryPanel';
+import PDFPanel from './PDFPanel';
 
 interface PDFPageInfo {
   originalWidth: number;
 }
 
 interface CheckItem {
-  id: string;
-  check_title: string;
-  check_descriptions: string[];
+  check_id: string;
+  check_short_name: string;
+  details: string[];
   check_status: 'pass' | 'fail';
   check_feedback?: 'positive' | 'negative' | null;
 }
@@ -55,22 +54,22 @@ const PDFViewer: React.FC = () => {
       page_number: 1,
       checks: [
         {
-          id: 'format-1',
-          check_title: 'Page Margins',
-          check_descriptions: [
-            'Verify that all pages have consistent margins',
-            'Check for proper spacing around headers and footers',
-            'Ensure no content is cut off at the edges'
+          check_id: 'format-1',
+          check_short_name: 'Page Margins',
+          details: [
+            'The document should maintain consistent 1-inch margins on all sides (top, bottom, left, and right) throughout all pages. This is crucial for professional presentation and printing purposes. Check for any content that extends beyond these margins or any inconsistencies in margin sizes between different sections of the document.',
+            'Pay special attention to headers and footers, ensuring they are properly positioned within the margin boundaries. Headers should be at least 0.5 inches from the top edge, and footers should be at least 0.5 inches from the bottom edge.',
+            'Verify that no text, images, or other elements are cut off or too close to the page edges. All content should be comfortably contained within the margin boundaries while maintaining readability and visual appeal.'
           ],
           check_status: 'fail'
         },
         {
-          id: 'format-2',
-          check_title: 'Font Consistency',
-          check_descriptions: [
-            'Check for consistent font usage throughout the document',
-            'Verify heading styles are properly applied',
-            'Ensure no mixed font families in paragraphs'
+          check_id: 'format-2',
+          check_short_name: 'Font Consistency',
+          details: [
+            'The document should use a consistent font family throughout all sections. Typically, a professional document should use no more than two font families: one for headings and one for body text. Check for any instances where different fonts are used within the same section or where font styles are inconsistent.',
+            'Verify that heading styles (H1, H2, H3, etc.) are properly applied and maintain consistent formatting. Each heading level should have its own distinct style while maintaining visual hierarchy. Check for proper font sizes, weights, and spacing between headings and body text.',
+            'Ensure that all text elements (paragraphs, lists, tables, etc.) use the same font family and size unless specifically required to be different. Pay attention to any imported content or copied text that might have brought in different font styles.'
           ],
           check_status: 'pass'
         }
@@ -82,22 +81,22 @@ const PDFViewer: React.FC = () => {
       page_number: 3,
       checks: [
         {
-          id: 'content-1',
-          check_title: 'Executive Summary',
-          check_descriptions: [
-            'Review the executive summary for completeness',
-            'Check for key findings and recommendations',
-            'Verify alignment with main document content'
+          check_id: 'content-1',
+          check_short_name: 'Executive Summary',
+          details: [
+            'The executive summary should provide a comprehensive yet concise overview of the entire document, highlighting key findings, recommendations, and main points. It should be written in a clear, professional tone and be accessible to both technical and non-technical readers.',
+            'Verify that the summary includes all critical information from the main document, including major conclusions, significant data points, and actionable recommendations. The summary should be self-contained and make sense even if read in isolation from the main document.',
+            'Check that the executive summary maintains proper formatting and structure, with clear paragraph breaks and logical flow of information. It should be properly positioned at the beginning of the document and should not exceed 10% of the total document length.'
           ],
           check_status: 'pass'
         },
         {
-          id: 'content-2',
-          check_title: 'Financial Data',
-          check_descriptions: [
-            'Verify all financial figures and calculations',
-            'Check for proper formatting of currency values',
-            'Ensure all tables are properly labeled and referenced'
+          check_id: 'content-2',
+          check_short_name: 'Financial Data',
+          details: [
+            'All financial figures, calculations, and data points must be accurate and properly formatted. This includes checking numerical values, currency symbols, decimal places, and date formats. Verify that all calculations are mathematically correct and that the data is presented in a clear, consistent manner throughout the document.',
+            'Review all financial tables and charts for proper formatting, including column alignments, decimal point consistency, and proper use of currency symbols. Check that all tables are properly numbered, titled, and referenced in the text. Verify that any formulas or calculations are clearly explained and properly documented.',
+            'Ensure that all financial data is properly sourced and that any assumptions or methodologies used in calculations are clearly stated. Check for proper handling of negative numbers, percentages, and any special financial notations or symbols.'
           ],
           check_status: 'fail'
         }
@@ -109,22 +108,22 @@ const PDFViewer: React.FC = () => {
       page_number: 5,
       checks: [
         {
-          id: 'legal-1',
-          check_title: 'Regulatory Requirements',
-          check_descriptions: [
-            'Verify compliance with industry regulations',
-            'Check for required legal disclaimers',
-            'Ensure proper citation of laws and regulations'
+          check_id: 'legal-1',
+          check_short_name: 'Regulatory Requirements',
+          details: [
+            'The document must comply with all relevant industry regulations and legal requirements. This includes checking for required legal disclaimers, proper citation of laws and regulations, and adherence to industry-specific compliance standards. Verify that all regulatory references are current and accurate.',
+            'Review all legal statements, terms, and conditions for accuracy and completeness. Check that any required legal notices or disclaimers are properly formatted and positioned within the document. Verify that all legal citations follow the correct format and are properly referenced.',
+            'Ensure that any data handling or privacy-related content complies with relevant data protection regulations (such as GDPR, CCPA, etc.). Check that all required consent statements and privacy notices are present and properly worded.'
           ],
           check_status: 'pass'
         },
         {
-          id: 'legal-2',
-          check_title: 'Data Privacy',
-          check_descriptions: [
-            'Review data protection statements',
-            'Check for proper handling of personal information',
-            'Verify GDPR compliance where applicable'
+          check_id: 'legal-2',
+          check_short_name: 'Data Privacy',
+          details: [
+            'All personal and sensitive data must be handled in accordance with applicable data protection regulations. This includes proper handling of personal information, appropriate data retention policies, and clear privacy statements. Verify that all data collection and processing activities are properly documented and justified.',
+            'Check that all privacy notices and consent forms are present, properly formatted, and contain all required information. Review any data sharing or transfer arrangements to ensure they comply with relevant regulations. Verify that appropriate security measures for data protection are documented.',
+            'Ensure that any third-party data processors or service providers are properly identified and that their roles and responsibilities are clearly defined. Check that all data subject rights are properly addressed and that procedures for handling data subject requests are documented.'
           ],
           check_status: 'fail'
         }
@@ -136,9 +135,9 @@ const PDFViewer: React.FC = () => {
       page_number: 7,
       checks: [
         {
-          id: 'tech-1',
-          check_title: 'System Requirements',
-          check_descriptions: [
+          check_id: 'tech-1',
+          check_short_name: 'System Requirements',
+          details: [
             'Verify minimum system requirements are listed',
             'Check for compatibility information',
             'Ensure all dependencies are documented'
@@ -146,9 +145,9 @@ const PDFViewer: React.FC = () => {
           check_status: 'pass'
         },
         {
-          id: 'tech-2',
-          check_title: 'API Documentation',
-          check_descriptions: [
+          check_id: 'tech-2',
+          check_short_name: 'API Documentation',
+          details: [
             'Review API endpoint documentation',
             'Check for proper request/response examples',
             'Verify authentication requirements are clear'
@@ -163,9 +162,9 @@ const PDFViewer: React.FC = () => {
       page_number: 9,
       checks: [
         {
-          id: 'qa-1',
-          check_title: 'Testing Procedures',
-          check_descriptions: [
+          check_id: 'qa-1',
+          check_short_name: 'Testing Procedures',
+          details: [
             'Review test coverage documentation',
             'Check for test case descriptions',
             'Verify test environment requirements'
@@ -173,9 +172,9 @@ const PDFViewer: React.FC = () => {
           check_status: 'fail'
         },
         {
-          id: 'qa-2',
-          check_title: 'Performance Metrics',
-          check_descriptions: [
+          check_id: 'qa-2',
+          check_short_name: 'Performance Metrics',
+          details: [
             'Verify performance benchmarks are documented',
             'Check for load testing results',
             'Ensure scalability requirements are clear'
@@ -304,7 +303,6 @@ const PDFViewer: React.FC = () => {
           
           <Panel defaultSize={50} minSize={30}>
             <CommentaryPanel
-              pdfFile={pdfFile}
               sections={sections}
               onCheckClick={handleCheckClick}
             />

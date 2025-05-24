@@ -20,9 +20,9 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 interface CheckItem {
-  id: string;
-  check_title: string;
-  check_descriptions: string[];
+  check_id: string;
+  check_short_name: string;
+  details: string[];
   check_status: 'pass' | 'fail';
   check_feedback?: 'positive' | 'negative' | null;
 }
@@ -35,13 +35,11 @@ interface Section {
 }
 
 interface CommentaryPanelProps {
-  pdfFile: File | null;
   sections: Section[];
   onCheckClick: (pageNum: number) => void;
 }
 
 const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
-  pdfFile,
   sections,
   onCheckClick
 }) => {
@@ -58,7 +56,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
           return {
             ...section,
             checks: section.checks.map(check => {
-              if (check.id === checkId) {
+              if (check.check_id === checkId) {
                 return {
                   ...check,
                   check_feedback: check.check_feedback === feedback ? null : feedback
@@ -90,12 +88,17 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
         overflow: 'auto', 
         p: 2
       }}>
-        {pdfFile ? (
-          <Box sx={{ mt: 2 }}>
+        {sections.length > 0 ? (
+          <Box sx={{ mt: 0 }}>
             {localSections.map((section) => (
               <Accordion 
                 key={section.id} 
-                sx={{ mb: 1 }}
+                sx={{ 
+                  mb: 0,
+                  '&:before': {
+                    display: 'none'
+                  }
+                }}
                 defaultExpanded
               >
                 <AccordionSummary
@@ -108,7 +111,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+                    <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
                       {section.section_title}
                     </Typography>
                     {section.page_number && (
@@ -120,11 +123,11 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                     )}
                   </Box>
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails sx={{ p: 0 }}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     {section.checks.map((check) => (
                       <Card 
-                        key={check.id}
+                        key={check.check_id}
                         onClick={(e) => handleSectionClick(e, section.page_number)}
                         sx={{ 
                           cursor: 'pointer',
@@ -148,11 +151,11 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                               variant="body2" 
                               sx={{ 
                                 flexGrow: 1,
-                                fontSize: '0.875rem',
+                                fontSize: '0.75rem',
                                 fontWeight: 500
                               }}
                             >
-                              {check.check_title}
+                              {check.check_short_name}
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                               <Tooltip title="Helpful">
@@ -164,7 +167,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleFeedback(section.id, check.id, 'positive');
+                                    handleFeedback(section.id, check.check_id, 'positive');
                                   }}
                                 >
                                   <ThumbUpIcon sx={{ fontSize: '1rem' }} />
@@ -179,7 +182,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleFeedback(section.id, check.id, 'negative');
+                                    handleFeedback(section.id, check.check_id, 'negative');
                                   }}
                                 >
                                   <ThumbDownIcon sx={{ fontSize: '1rem' }} />
@@ -209,7 +212,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                               }
                             }}
                           >
-                            {check.check_descriptions.map((description, index) => (
+                            {check.details.map((detail, index) => (
                               <ListItem 
                                 key={index} 
                                 sx={{ 
@@ -218,7 +221,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                                 }}
                               >
                                 <ListItemText
-                                  primary={description}
+                                  primary={detail}
                                   primaryTypographyProps={{
                                     variant: 'body2',
                                     color: 'text.secondary',
@@ -239,7 +242,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
           </Box>
         ) : (
           <Typography>
-            Upload a PDF file to start viewing and adding commentary.
+            No sections available for review.
           </Typography>
         )}
       </Box>
