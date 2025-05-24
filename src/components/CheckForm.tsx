@@ -111,7 +111,14 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
                   size="small"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter check name"
+                  sx={{
+                    '& .MuiInputBase-input': {
+                      fontSize: '0.75rem',
+                    },
+                    '& .MuiInputLabel-root': {
+                      fontSize: '0.75rem',
+                    }
+                  }}
                 />
               </Box>
 
@@ -124,9 +131,16 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
                   size="small"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Enter check description"
                   multiline
                   rows={3}
+                  sx={{
+                    '& .MuiInputBase-input': {
+                      fontSize: '0.75rem',
+                    },
+                    '& .MuiInputLabel-root': {
+                      fontSize: '0.75rem',
+                    }
+                  }}
                 />
               </Box>
 
@@ -139,9 +153,16 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
                   size="small"
                   value={detailedPrompt}
                   onChange={(e) => setDetailedPrompt(e.target.value)}
-                  placeholder="Enter detailed prompt"
                   multiline
                   rows={6}
+                  sx={{
+                    '& .MuiInputBase-input': {
+                      fontSize: '0.75rem',
+                    },
+                    '& .MuiInputLabel-root': {
+                      fontSize: '0.75rem',
+                    }
+                  }}
                 />
               </Box>
             </Box>
@@ -159,7 +180,7 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
               <Paper
                 variant="outlined"
                 sx={{
-                  height: '335px',
+                  height: '330px',
                   overflow: 'auto'
                 }}
               >
@@ -179,8 +200,16 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
                           checked={associatedSections.indexOf(section) !== -1}
                           tabIndex={-1}
                           disableRipple
+                          size="small"
                         />
-                        <ListItemText primary={section} />
+                        <ListItemText 
+                          primary={section} 
+                          sx={{
+                            '& .MuiListItemText-primary': {
+                              fontSize: '0.75rem',
+                            }
+                          }}
+                        />
                       </ListItemButton>
                     </ListItem>
                   ))}

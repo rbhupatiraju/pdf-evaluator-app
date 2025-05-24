@@ -1,88 +1,87 @@
-import React, { useState, useMemo } from 'react';
+import ChecklistIcon from '@mui/icons-material/Checklist';
+import EditIcon from '@mui/icons-material/Edit';
+import HistoryIcon from '@mui/icons-material/History';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import UploadIcon from '@mui/icons-material/Upload';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Box,
+  FormControl,
+  Grid,
+  IconButton,
+  Link,
+  MenuItem,
+  Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Typography,
-  Link,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Grid,
-  IconButton,
   Tooltip,
+  Typography
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import ChecklistIcon from '@mui/icons-material/Checklist';
-import UploadIcon from '@mui/icons-material/Upload';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import HistoryIcon from '@mui/icons-material/History';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UploadDialog from './UploadDialog';
 
 interface Document {
-  id: string;
-  doc_name: string;
-  doc_type: string;
+  document_id: string;
+  document_name: string;
+  document_type: string;
   client_name: string;
   last_updated_by: string;
   last_updated_date: string;
-  doc_status: string;
+  status: string;
 }
 
 // Sample data - replace with actual data fetching logic
 const sampleDocuments: Document[] = [
   {
-    id: '1',
-    doc_name: 'Contract 2024',
-    doc_type: 'PDF',
+    document_id: '1',
+    document_name: 'Contract 2024',
+    document_type: 'PDF',
     client_name: 'Acme Corp',
     last_updated_by: 'John Doe',
     last_updated_date: '2024-03-20',
-    doc_status: 'CHECKS COMPLETE',
+    status: 'CHECKS COMPLETE',
   },
   {
-    id: '2',
-    doc_name: 'Financial Report Q1',
-    doc_type: 'PDF',
+    document_id: '2',
+    document_name: 'Financial Report Q1',
+    document_type: 'PDF',
     client_name: 'Tech Corp',
     last_updated_by: 'Jane Smith',
     last_updated_date: '2024-03-19',
-    doc_status: 'EXTRACTION IN PROGRESS',
+    status: 'EXTRACTION IN PROGRESS',
   },
   {
-    id: '3',
-    doc_name: 'Legal Document',
-    doc_type: 'PDF',
+    document_id: '3',
+    document_name: 'Legal Document',
+    document_type: 'PDF',
     client_name: 'Acme Corp',
     last_updated_by: 'Mike Johnson',
     last_updated_date: '2024-03-15',
-    doc_status: 'CHECKS IN PROGRESS',
+    status: 'CHECKS IN PROGRESS',
   },
   {
-    id: '4',
-    doc_name: 'Project Proposal',
-    doc_type: 'PDF',
+    document_id: '4',
+    document_name: 'Project Proposal',
+    document_type: 'PDF',
     client_name: 'Global Inc',
     last_updated_by: 'Sarah Wilson',
     last_updated_date: '2024-03-10',
-    doc_status: 'EXTRACTION COMPLETED',
+    status: 'EXTRACTION COMPLETED',
   },
   {
-    id: '5',
-    doc_name: 'Annual Report 2023',
-    doc_type: 'PDF',
+    document_id: '5',
+    document_name: 'Annual Report 2023',
+    document_type: 'PDF',
     client_name: 'Acme Corp',
     last_updated_by: 'John Doe',
     last_updated_date: '2024-03-05',
-    doc_status: 'FILE UPLOADED',
+    status: 'FILE UPLOADED',
   },
 ];
 
@@ -120,27 +119,27 @@ const DocumentList: React.FC = () => {
 
   const handleDownload = (e: React.MouseEvent, document: Document) => {
     e.stopPropagation();
-    console.log('Downloading document:', document.doc_name);
+    console.log('Downloading document:', document.document_name);
     // TODO: Implement actual download functionality
-  };
-
-  const handleEditClick = (e: React.MouseEvent, document: Document) => {
-    e.stopPropagation();
-    localStorage.setItem('selectedDocument', JSON.stringify(document));
-    navigate('/run-checks');
   };
 
   const handleViewClick = (e: React.MouseEvent, document: Document) => {
     e.stopPropagation();
     localStorage.setItem('selectedDocument', JSON.stringify(document));
-    navigate('/viewer');
+    navigate(`/viewer/${document.document_id}`);
+  };
+
+  const handleEditClick = (e: React.MouseEvent, document: Document) => {
+    e.stopPropagation();
+    localStorage.setItem('selectedDocument', JSON.stringify(document));
+    navigate(`/run-checks/${document.document_id}`);
   };
 
   // Filter documents based on selected filters
   const filteredDocuments = useMemo(() => {
     return sampleDocuments.filter(doc => {
       const matchesClient = !selectedClient || doc.client_name === selectedClient;
-      const matchesStatus = !selectedStatus || doc.doc_status === selectedStatus;
+      const matchesStatus = !selectedStatus || doc.status === selectedStatus;
       
       let matchesDateRange = true;
       if (selectedDateRange) {
@@ -291,7 +290,7 @@ const DocumentList: React.FC = () => {
           <TableBody>
             {filteredDocuments.map((document) => (
               <TableRow
-                key={document.id}
+                key={document.document_id}
                 hover
                 onClick={() => handleDocumentClick(document)}
                 sx={{ cursor: 'pointer' }}
@@ -303,7 +302,7 @@ const DocumentList: React.FC = () => {
                         <IconButton
                           size="small"
                           onClick={(e) => handleViewClick(e, document)}
-                          disabled={document.doc_status !== 'CHECKS COMPLETE'}
+                          disabled={document.status !== 'CHECKS COMPLETE'}
                           sx={{
                             '&:hover': {
                               backgroundColor: 'rgba(0, 0, 0, 0.04)',
@@ -350,14 +349,14 @@ const DocumentList: React.FC = () => {
                     variant="body2"
                     onClick={(e) => handleDownload(e, document)}
                   >
-                    {document.doc_name}
+                    {document.document_name}
                   </Link>
                 </TableCell>
-                <TableCell>{document.doc_type}</TableCell>
+                <TableCell>{document.document_type}</TableCell>
                 <TableCell>{document.client_name}</TableCell>
                 <TableCell>{document.last_updated_by}</TableCell>
                 <TableCell>{document.last_updated_date}</TableCell>
-                <TableCell>{document.doc_status}</TableCell>
+                <TableCell>{document.status}</TableCell>
               </TableRow>
             ))}
           </TableBody>

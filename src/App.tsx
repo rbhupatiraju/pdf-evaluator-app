@@ -170,8 +170,8 @@ const App: React.FC = () => {
           <Box sx={{ flex: 1, overflow: 'hidden' }}>
             <Routes>
               <Route path="/" element={<DocumentList />} />
-              <Route path="/viewer" element={<PDFViewer />} />
-              <Route path="/run-checks" element={<RunChecks />} />
+              <Route path="/viewer/:documentId" element={<PDFViewer />} />
+              <Route path="/run-checks/:documentId" element={<RunChecks />} />
               <Route path="/checks" element={<ChecksList />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

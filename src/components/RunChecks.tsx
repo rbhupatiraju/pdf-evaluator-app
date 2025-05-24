@@ -57,7 +57,13 @@ const RunChecks: React.FC = () => {
   };
 
   const handleViewResults = () => {
-    navigate('/viewer');
+    const selectedDocument = localStorage.getItem('selectedDocument');
+    if (selectedDocument) {
+      const document = JSON.parse(selectedDocument);
+      navigate(`/viewer/${document.document_id}`);
+    } else {
+      navigate('/viewer');
+    }
   };
 
   return (
