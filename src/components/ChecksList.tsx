@@ -113,7 +113,7 @@ const ChecksList: React.FC = () => {
     <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h6">
-          Checks List
+          Control Checks
         </Typography>
         <Tooltip title="Add Check">
           <IconButton
@@ -134,29 +134,16 @@ const ChecksList: React.FC = () => {
         <Table sx={{ minWidth: 650 }} aria-label="checks list">
           <TableHead>
             <TableRow>
+              <TableCell align="center" sx={{ width: '100px' }}>Actions</TableCell>
               <TableCell>Check Name</TableCell>
               <TableCell sx={{ maxWidth: '300px' }}>Description</TableCell>
               <TableCell>Associated Sections</TableCell>
               <TableCell>Last Updated</TableCell>
-              <TableCell align="center" sx={{ width: '100px' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {checks.map((check) => (
               <TableRow key={check.id}>
-                <TableCell>{check.check_name}</TableCell>
-                <TableCell 
-                  sx={{ 
-                    maxWidth: '300px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}
-                >
-                  {check.check_description}
-                </TableCell>
-                <TableCell>{check.associated_sections.join(', ')}</TableCell>
-                <TableCell>{check.last_updated_date}</TableCell>
                 <TableCell align="center">
                   <Tooltip title="Edit">
                     <IconButton
@@ -185,6 +172,19 @@ const ChecksList: React.FC = () => {
                     </IconButton>
                   </Tooltip>
                 </TableCell>
+                <TableCell>{check.check_name}</TableCell>
+                <TableCell 
+                  sx={{ 
+                    maxWidth: '300px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
+                  {check.check_description}
+                </TableCell>
+                <TableCell>{check.associated_sections.join(', ')}</TableCell>
+                <TableCell>{check.last_updated_date}</TableCell>
               </TableRow>
             ))}
           </TableBody>

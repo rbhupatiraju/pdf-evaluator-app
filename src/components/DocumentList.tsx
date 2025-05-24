@@ -279,13 +279,13 @@ const DocumentList: React.FC = () => {
         <Table sx={{ minWidth: 650 }} aria-label="document list">
           <TableHead>
             <TableRow>
+              <TableCell align="center" sx={{ width: '120px' }}>Actions</TableCell>
               <TableCell>Document Name</TableCell>
               <TableCell>Document Type</TableCell>
               <TableCell>Client</TableCell>
               <TableCell>Last Updated By</TableCell>
               <TableCell>Last Updated Date</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell align="center" sx={{ width: '120px' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -296,20 +296,6 @@ const DocumentList: React.FC = () => {
                 onClick={() => handleDocumentClick(document)}
                 sx={{ cursor: 'pointer' }}
               >
-                <TableCell>
-                  <Link
-                    component="button"
-                    variant="body2"
-                    onClick={(e) => handleDownload(e, document)}
-                  >
-                    {document.doc_name}
-                  </Link>
-                </TableCell>
-                <TableCell>{document.doc_type}</TableCell>
-                <TableCell>{document.client_name}</TableCell>
-                <TableCell>{document.last_updated_by}</TableCell>
-                <TableCell>{document.last_updated_date}</TableCell>
-                <TableCell>{document.doc_status}</TableCell>
                 <TableCell align="center">
                   <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                     <Tooltip title="View">
@@ -358,6 +344,20 @@ const DocumentList: React.FC = () => {
                     </Tooltip>
                   </Box>
                 </TableCell>
+                <TableCell>
+                  <Link
+                    component="button"
+                    variant="body2"
+                    onClick={(e) => handleDownload(e, document)}
+                  >
+                    {document.doc_name}
+                  </Link>
+                </TableCell>
+                <TableCell>{document.doc_type}</TableCell>
+                <TableCell>{document.client_name}</TableCell>
+                <TableCell>{document.last_updated_by}</TableCell>
+                <TableCell>{document.last_updated_date}</TableCell>
+                <TableCell>{document.doc_status}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -91,7 +91,7 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ pb: 1 }}>
-        {initialData ? 'Edit Check' : 'Add New Check'}
+        {initialData ? 'Edit Control Check' : 'Add New Control Check'}
       </DialogTitle>
       <DialogContent sx={{ pt: 1 }}>
         <Grid container spacing={3}>
