@@ -19,53 +19,53 @@ import CheckForm from './CheckForm';
 
 interface Check {
   id: string;
-  name: string;
-  description: string;
-  detailedPrompt: string;
-  associatedSections: string[];
-  lastUpdatedDate: string;
+  check_name: string;
+  check_description: string;
+  detailed_prompt: string;
+  associated_sections: string[];
+  last_updated_date: string;
 }
 
 const sampleChecks: Check[] = [
   {
     id: '1',
-    name: 'Page Margins',
-    description: 'Verify that all page margins are set to 1 inch on all sides of the document. This includes top, bottom, left, and right margins. The margins should be consistent throughout the entire document and should not vary between sections.',
-    detailedPrompt: 'Check all pages of the document for consistent 1-inch margins. Verify that no content extends beyond the margins and that the layout is uniform throughout.',
-    associatedSections: ['Document Formatting', 'Page Layout'],
-    lastUpdatedDate: '2024-03-20',
+    check_name: 'Page Margins',
+    check_description: 'Verify that all page margins are set to 1 inch on all sides of the document. This includes top, bottom, left, and right margins. The margins should be consistent throughout the entire document and should not vary between sections.',
+    detailed_prompt: 'Check all pages of the document for consistent 1-inch margins. Verify that no content extends beyond the margins and that the layout is uniform throughout.',
+    associated_sections: ['Document Formatting', 'Page Layout'],
+    last_updated_date: '2024-03-20',
   },
   {
     id: '2',
-    name: 'Executive Summary',
-    description: 'Check if executive summary is present and properly formatted. The summary should include key findings, recommendations, and a brief overview of the document. It should be concise yet comprehensive, providing a clear snapshot of the main points covered in the document.',
-    detailedPrompt: 'Review the executive summary section for completeness and proper formatting. Ensure it captures the main points of the document and follows the standard executive summary format.',
-    associatedSections: ['Content Review', 'Document Structure'],
-    lastUpdatedDate: '2024-03-19',
+    check_name: 'Executive Summary',
+    check_description: 'Check if executive summary is present and properly formatted. The summary should include key findings, recommendations, and a brief overview of the document. It should be concise yet comprehensive, providing a clear snapshot of the main points covered in the document.',
+    detailed_prompt: 'Review the executive summary section for completeness and proper formatting. Ensure it captures the main points of the document and follows the standard executive summary format.',
+    associated_sections: ['Content Review', 'Document Structure'],
+    last_updated_date: '2024-03-19',
   },
   {
     id: '3',
-    name: 'Financial Data',
-    description: 'Verify all financial data is accurate and properly formatted. This includes checking numerical values, currency symbols, decimal places, and date formats. Ensure that all calculations are correct and that the data is presented in a clear, consistent manner throughout the document.',
-    detailedPrompt: 'Examine all financial figures, tables, and calculations in the document. Verify the accuracy of numbers, proper use of currency symbols, and consistent decimal places. Check that all calculations are correct and properly referenced.',
-    associatedSections: ['Content Review', 'Data Validation'],
-    lastUpdatedDate: '2024-03-18',
+    check_name: 'Financial Data',
+    check_description: 'Verify all financial data is accurate and properly formatted. This includes checking numerical values, currency symbols, decimal places, and date formats. Ensure that all calculations are correct and that the data is presented in a clear, consistent manner throughout the document.',
+    detailed_prompt: 'Examine all financial figures, tables, and calculations in the document. Verify the accuracy of numbers, proper use of currency symbols, and consistent decimal places. Check that all calculations are correct and properly referenced.',
+    associated_sections: ['Content Review', 'Data Validation'],
+    last_updated_date: '2024-03-18',
   },
   {
     id: '4',
-    name: 'Document Headers',
-    description: 'Ensure that all document headers are properly formatted and consistent throughout the document. Headers should include the document title, section numbers, and page numbers. Check that the header style matches the document template and that there are no formatting inconsistencies.',
-    detailedPrompt: 'Review all headers in the document for consistency in style, formatting, and content. Verify that headers include the correct document title, section numbers, and page numbers. Check that the header style matches the document template.',
-    associatedSections: ['Document Formatting', 'Page Layout'],
-    lastUpdatedDate: '2024-03-17',
+    check_name: 'Document Headers',
+    check_description: 'Ensure that all document headers are properly formatted and consistent throughout the document. Headers should include the document title, section numbers, and page numbers. Check that the header style matches the document template and that there are no formatting inconsistencies.',
+    detailed_prompt: 'Review all headers in the document for consistency in style, formatting, and content. Verify that headers include the correct document title, section numbers, and page numbers. Check that the header style matches the document template.',
+    associated_sections: ['Document Formatting', 'Page Layout'],
+    last_updated_date: '2024-03-17',
   },
   {
     id: '5',
-    name: 'Table Formatting',
-    description: 'Review all tables in the document for proper formatting and consistency. This includes checking column widths, row heights, cell padding, borders, and text alignment. Tables should be properly numbered and referenced in the text, with clear headers and appropriate spacing.',
-    detailedPrompt: 'Examine all tables in the document for proper formatting and consistency. Check column widths, row heights, cell padding, borders, and text alignment. Verify that tables are properly numbered and referenced in the text.',
-    associatedSections: ['Document Formatting', 'Content Review'],
-    lastUpdatedDate: '2024-03-16',
+    check_name: 'Table Formatting',
+    check_description: 'Review all tables in the document for proper formatting and consistency. This includes checking column widths, row heights, cell padding, borders, and text alignment. Tables should be properly numbered and referenced in the text, with clear headers and appropriate spacing.',
+    detailed_prompt: 'Examine all tables in the document for proper formatting and consistency. Check column widths, row heights, cell padding, borders, and text alignment. Verify that tables are properly numbered and referenced in the text.',
+    associated_sections: ['Document Formatting', 'Content Review'],
+    last_updated_date: '2024-03-16',
   }
 ];
 
@@ -89,12 +89,12 @@ const ChecksList: React.FC = () => {
     setFormOpen(true);
   };
 
-  const handleSave = (checkData: Omit<Check, 'id' | 'lastUpdatedDate'>) => {
+  const handleSave = (checkData: Omit<Check, 'id' | 'last_updated_date'>) => {
     if (editingCheck) {
       // Update existing check
       setChecks(checks.map(check => 
         check.id === editingCheck.id 
-          ? { ...check, ...checkData, lastUpdatedDate: new Date().toISOString().split('T')[0] }
+          ? { ...check, ...checkData, last_updated_date: new Date().toISOString().split('T')[0] }
           : check
       ));
     } else {
@@ -102,7 +102,7 @@ const ChecksList: React.FC = () => {
       const newCheck: Check = {
         id: Date.now().toString(),
         ...checkData,
-        lastUpdatedDate: new Date().toISOString().split('T')[0],
+        last_updated_date: new Date().toISOString().split('T')[0],
       };
       setChecks([...checks, newCheck]);
     }
@@ -144,7 +144,7 @@ const ChecksList: React.FC = () => {
           <TableBody>
             {checks.map((check) => (
               <TableRow key={check.id}>
-                <TableCell>{check.name}</TableCell>
+                <TableCell>{check.check_name}</TableCell>
                 <TableCell 
                   sx={{ 
                     maxWidth: '300px',
@@ -153,10 +153,10 @@ const ChecksList: React.FC = () => {
                     textOverflow: 'ellipsis'
                   }}
                 >
-                  {check.description}
+                  {check.check_description}
                 </TableCell>
-                <TableCell>{check.associatedSections.join(', ')}</TableCell>
-                <TableCell>{check.lastUpdatedDate}</TableCell>
+                <TableCell>{check.associated_sections.join(', ')}</TableCell>
+                <TableCell>{check.last_updated_date}</TableCell>
                 <TableCell align="center">
                   <Tooltip title="Edit">
                     <IconButton

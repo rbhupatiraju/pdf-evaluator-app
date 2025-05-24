@@ -21,16 +21,16 @@ interface CheckFormProps {
   open: boolean;
   onClose: () => void;
   onSave: (check: {
-    name: string;
-    description: string;
-    detailedPrompt: string;
-    associatedSections: string[];
+    check_name: string;
+    check_description: string;
+    detailed_prompt: string;
+    associated_sections: string[];
   }) => void;
   initialData?: {
-    name: string;
-    description: string;
-    detailedPrompt: string;
-    associatedSections: string[];
+    check_name: string;
+    check_description: string;
+    detailed_prompt: string;
+    associated_sections: string[];
   };
 }
 
@@ -53,10 +53,10 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
 
   useEffect(() => {
     if (initialData) {
-      setName(initialData.name);
-      setDescription(initialData.description);
-      setDetailedPrompt(initialData.detailedPrompt);
-      setAssociatedSections(initialData.associatedSections);
+      setName(initialData.check_name);
+      setDescription(initialData.check_description);
+      setDetailedPrompt(initialData.detailed_prompt);
+      setAssociatedSections(initialData.associated_sections);
     } else {
       // Reset form when opening for new check
       setName('');
@@ -68,10 +68,10 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
 
   const handleSave = () => {
     onSave({
-      name,
-      description,
-      detailedPrompt,
-      associatedSections,
+      check_name: name,
+      check_description: description,
+      detailed_prompt: detailedPrompt,
+      associated_sections: associatedSections,
     });
   };
 
@@ -159,7 +159,7 @@ const CheckForm: React.FC<CheckFormProps> = ({ open, onClose, onSave, initialDat
               <Paper
                 variant="outlined"
                 sx={{
-                  height: '320px',
+                  height: '335px',
                   overflow: 'auto'
                 }}
               >

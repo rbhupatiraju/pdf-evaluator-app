@@ -13,27 +13,27 @@ interface PDFPageInfo {
 
 interface CheckItem {
   id: string;
-  title: string;
-  descriptions: string[];
-  status: 'pass' | 'fail';
-  feedback?: 'positive' | 'negative' | null;
+  check_title: string;
+  check_descriptions: string[];
+  check_status: 'pass' | 'fail';
+  check_feedback?: 'positive' | 'negative' | null;
 }
 
 interface Section {
   id: string;
-  title: string;
-  pageNumber: number;
+  section_title: string;
+  page_number: number;
   checks: CheckItem[];
 }
 
 interface Document {
   id: string;
-  name: string;
-  type: string;
-  client: string;
-  lastUpdatedBy: string;
-  lastUpdatedDate: string;
-  status: string;
+  doc_name: string;
+  doc_type: string;
+  client_name: string;
+  last_updated_by: string;
+  last_updated_date: string;
+  doc_status: string;
 }
 
 const PDFViewer: React.FC = () => {
@@ -51,136 +51,136 @@ const PDFViewer: React.FC = () => {
   const sections: Section[] = [
     {
       id: 'formatting',
-      title: 'Document Formatting',
-      pageNumber: 1,
+      section_title: 'Document Formatting',
+      page_number: 1,
       checks: [
         {
           id: 'format-1',
-          title: 'Page Margins',
-          descriptions: [
+          check_title: 'Page Margins',
+          check_descriptions: [
             'Verify that all pages have consistent margins',
             'Check for proper spacing around headers and footers',
             'Ensure no content is cut off at the edges'
           ],
-          status: 'fail'
+          check_status: 'fail'
         },
         {
           id: 'format-2',
-          title: 'Font Consistency',
-          descriptions: [
+          check_title: 'Font Consistency',
+          check_descriptions: [
             'Check for consistent font usage throughout the document',
             'Verify heading styles are properly applied',
             'Ensure no mixed font families in paragraphs'
           ],
-          status: 'pass'
+          check_status: 'pass'
         }
       ]
     },
     {
       id: 'content',
-      title: 'Content Review',
-      pageNumber: 3,
+      section_title: 'Content Review',
+      page_number: 3,
       checks: [
         {
           id: 'content-1',
-          title: 'Executive Summary',
-          descriptions: [
+          check_title: 'Executive Summary',
+          check_descriptions: [
             'Review the executive summary for completeness',
             'Check for key findings and recommendations',
             'Verify alignment with main document content'
           ],
-          status: 'pass'
+          check_status: 'pass'
         },
         {
           id: 'content-2',
-          title: 'Financial Data',
-          descriptions: [
+          check_title: 'Financial Data',
+          check_descriptions: [
             'Verify all financial figures and calculations',
             'Check for proper formatting of currency values',
             'Ensure all tables are properly labeled and referenced'
           ],
-          status: 'fail'
+          check_status: 'fail'
         }
       ]
     },
     {
       id: 'legal',
-      title: 'Legal Compliance',
-      pageNumber: 5,
+      section_title: 'Legal Compliance',
+      page_number: 5,
       checks: [
         {
           id: 'legal-1',
-          title: 'Regulatory Requirements',
-          descriptions: [
+          check_title: 'Regulatory Requirements',
+          check_descriptions: [
             'Verify compliance with industry regulations',
             'Check for required legal disclaimers',
             'Ensure proper citation of laws and regulations'
           ],
-          status: 'pass'
+          check_status: 'pass'
         },
         {
           id: 'legal-2',
-          title: 'Data Privacy',
-          descriptions: [
+          check_title: 'Data Privacy',
+          check_descriptions: [
             'Review data protection statements',
             'Check for proper handling of personal information',
             'Verify GDPR compliance where applicable'
           ],
-          status: 'fail'
+          check_status: 'fail'
         }
       ]
     },
     {
       id: 'technical',
-      title: 'Technical Specifications',
-      pageNumber: 7,
+      section_title: 'Technical Specifications',
+      page_number: 7,
       checks: [
         {
           id: 'tech-1',
-          title: 'System Requirements',
-          descriptions: [
+          check_title: 'System Requirements',
+          check_descriptions: [
             'Verify minimum system requirements are listed',
             'Check for compatibility information',
             'Ensure all dependencies are documented'
           ],
-          status: 'pass'
+          check_status: 'pass'
         },
         {
           id: 'tech-2',
-          title: 'API Documentation',
-          descriptions: [
+          check_title: 'API Documentation',
+          check_descriptions: [
             'Review API endpoint documentation',
             'Check for proper request/response examples',
             'Verify authentication requirements are clear'
           ],
-          status: 'pass'
+          check_status: 'pass'
         }
       ]
     },
     {
       id: 'quality',
-      title: 'Quality Assurance',
-      pageNumber: 9,
+      section_title: 'Quality Assurance',
+      page_number: 9,
       checks: [
         {
           id: 'qa-1',
-          title: 'Testing Procedures',
-          descriptions: [
+          check_title: 'Testing Procedures',
+          check_descriptions: [
             'Review test coverage documentation',
             'Check for test case descriptions',
             'Verify test environment requirements'
           ],
-          status: 'fail'
+          check_status: 'fail'
         },
         {
           id: 'qa-2',
-          title: 'Performance Metrics',
-          descriptions: [
+          check_title: 'Performance Metrics',
+          check_descriptions: [
             'Verify performance benchmarks are documented',
             'Check for load testing results',
             'Ensure scalability requirements are clear'
           ],
-          status: 'pass'
+          check_status: 'pass'
         }
       ]
     }

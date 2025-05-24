@@ -22,56 +22,67 @@ import EditIcon from '@mui/icons-material/Edit';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import UploadIcon from '@mui/icons-material/Upload';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import HistoryIcon from '@mui/icons-material/History';
 import { useNavigate } from 'react-router-dom';
 import UploadDialog from './UploadDialog';
 
 interface Document {
   id: string;
-  name: string;
-  type: string;
-  client: string;
-  lastUpdatedBy: string;
-  lastUpdatedDate: string;
-  status: string;
+  doc_name: string;
+  doc_type: string;
+  client_name: string;
+  last_updated_by: string;
+  last_updated_date: string;
+  doc_status: string;
 }
 
 // Sample data - replace with actual data fetching logic
 const sampleDocuments: Document[] = [
   {
     id: '1',
-    name: 'Contract 2024',
-    type: 'PDF',
-    client: 'Acme Corp',
-    lastUpdatedBy: 'John Doe',
-    lastUpdatedDate: '2024-03-20',
-    status: 'Active',
+    doc_name: 'Contract 2024',
+    doc_type: 'PDF',
+    client_name: 'Acme Corp',
+    last_updated_by: 'John Doe',
+    last_updated_date: '2024-03-20',
+    doc_status: 'CHECKS COMPLETE',
   },
   {
     id: '2',
-    name: 'Financial Report Q1',
-    type: 'PDF',
-    client: 'Tech Corp',
-    lastUpdatedBy: 'Jane Smith',
-    lastUpdatedDate: '2024-03-19',
-    status: 'Pending',
+    doc_name: 'Financial Report Q1',
+    doc_type: 'PDF',
+    client_name: 'Tech Corp',
+    last_updated_by: 'Jane Smith',
+    last_updated_date: '2024-03-19',
+    doc_status: 'EXTRACTION IN PROGRESS',
   },
   {
     id: '3',
-    name: 'Legal Document',
-    type: 'PDF',
-    client: 'Acme Corp',
-    lastUpdatedBy: 'Mike Johnson',
-    lastUpdatedDate: '2024-03-15',
-    status: 'Completed',
+    doc_name: 'Legal Document',
+    doc_type: 'PDF',
+    client_name: 'Acme Corp',
+    last_updated_by: 'Mike Johnson',
+    last_updated_date: '2024-03-15',
+    doc_status: 'CHECKS IN PROGRESS',
   },
   {
     id: '4',
-    name: 'Project Proposal',
-    type: 'PDF',
-    client: 'Global Inc',
-    lastUpdatedBy: 'Sarah Wilson',
-    lastUpdatedDate: '2024-03-10',
-    status: 'Active',
+    doc_name: 'Project Proposal',
+    doc_type: 'PDF',
+    client_name: 'Global Inc',
+    last_updated_by: 'Sarah Wilson',
+    last_updated_date: '2024-03-10',
+    doc_status: 'EXTRACTION COMPLETED',
+  },
+  {
+    id: '5',
+    doc_name: 'Annual Report 2023',
+    doc_type: 'PDF',
+    client_name: 'Acme Corp',
+    last_updated_by: 'John Doe',
+    last_updated_date: '2024-03-05',
+    doc_status: 'FILE UPLOADED',
   },
 ];
 
@@ -90,18 +101,27 @@ const DocumentList: React.FC = () => {
 
   // Get unique clients and statuses from the data
   const clients = useMemo(() => 
-    Array.from(new Set(sampleDocuments.map(doc => doc.client))),
+    Array.from(new Set(sampleDocuments.map(doc => doc.client_name))),
     []
   );
 
-  const statuses = useMemo(() => 
-    Array.from(new Set(sampleDocuments.map(doc => doc.status))),
-    []
-  );
+  const statuses = [
+    'FILE UPLOADED',
+    'EXTRACTION IN PROGRESS',
+    'EXTRACTION COMPLETED',
+    'CHECKS IN PROGRESS',
+    'CHECKS COMPLETE'
+  ];
 
   const handleDocumentClick = (document: Document) => {
     localStorage.setItem('selectedDocument', JSON.stringify(document));
     navigate('/viewer');
+  };
+
+  const handleDownload = (e: React.MouseEvent, document: Document) => {
+    e.stopPropagation();
+    console.log('Downloading document:', document.doc_name);
+    // TODO: Implement actual download functionality
   };
 
   const handleEditClick = (e: React.MouseEvent, document: Document) => {
@@ -110,15 +130,21 @@ const DocumentList: React.FC = () => {
     navigate('/run-checks');
   };
 
+  const handleViewClick = (e: React.MouseEvent, document: Document) => {
+    e.stopPropagation();
+    localStorage.setItem('selectedDocument', JSON.stringify(document));
+    navigate('/viewer');
+  };
+
   // Filter documents based on selected filters
   const filteredDocuments = useMemo(() => {
     return sampleDocuments.filter(doc => {
-      const matchesClient = !selectedClient || doc.client === selectedClient;
-      const matchesStatus = !selectedStatus || doc.status === selectedStatus;
+      const matchesClient = !selectedClient || doc.client_name === selectedClient;
+      const matchesStatus = !selectedStatus || doc.doc_status === selectedStatus;
       
       let matchesDateRange = true;
       if (selectedDateRange) {
-        const docDate = new Date(doc.lastUpdatedDate);
+        const docDate = new Date(doc.last_updated_date);
         const today = new Date();
         const daysDiff = Math.floor((today.getTime() - docDate.getTime()) / (1000 * 60 * 60 * 24));
         matchesDateRange = daysDiff <= parseInt(selectedDateRange);
@@ -153,10 +179,10 @@ const DocumentList: React.FC = () => {
             Client
           </Typography>
           <FormControl fullWidth size="small">
-            <InputLabel>Client</InputLabel>
             <Select
               value={selectedClient}
               onChange={(e) => setSelectedClient(e.target.value)}
+              displayEmpty
             >
               <MenuItem value="">All Clients</MenuItem>
               {clients.map((client) => (
@@ -172,10 +198,10 @@ const DocumentList: React.FC = () => {
             Status
           </Typography>
           <FormControl fullWidth size="small">
-            <InputLabel>Status</InputLabel>
             <Select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
+              displayEmpty
             >
               <MenuItem value="">All Statuses</MenuItem>
               {statuses.map((status) => (
@@ -191,10 +217,10 @@ const DocumentList: React.FC = () => {
             Date Range
           </Typography>
           <FormControl fullWidth size="small">
-            <InputLabel>Date Range</InputLabel>
             <Select
               value={selectedDateRange}
               onChange={(e) => setSelectedDateRange(e.target.value)}
+              displayEmpty
             >
               <MenuItem value="">All Time</MenuItem>
               {dateRanges.map((range) => (
@@ -259,7 +285,7 @@ const DocumentList: React.FC = () => {
               <TableCell>Last Updated By</TableCell>
               <TableCell>Last Updated Date</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell align="center" sx={{ width: '50px' }}>Actions</TableCell>
+              <TableCell align="center" sx={{ width: '120px' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -274,33 +300,63 @@ const DocumentList: React.FC = () => {
                   <Link
                     component="button"
                     variant="body2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDocumentClick(document);
-                    }}
+                    onClick={(e) => handleDownload(e, document)}
                   >
-                    {document.name}
+                    {document.doc_name}
                   </Link>
                 </TableCell>
-                <TableCell>{document.type}</TableCell>
-                <TableCell>{document.client}</TableCell>
-                <TableCell>{document.lastUpdatedBy}</TableCell>
-                <TableCell>{document.lastUpdatedDate}</TableCell>
-                <TableCell>{document.status}</TableCell>
+                <TableCell>{document.doc_type}</TableCell>
+                <TableCell>{document.client_name}</TableCell>
+                <TableCell>{document.last_updated_by}</TableCell>
+                <TableCell>{document.last_updated_date}</TableCell>
+                <TableCell>{document.doc_status}</TableCell>
                 <TableCell align="center">
-                  <Tooltip title="Edit">
-                    <IconButton
-                      size="small"
-                      onClick={(e) => handleEditClick(e, document)}
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                        },
-                      }}
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                    <Tooltip title="View">
+                      <span>
+                        <IconButton
+                          size="small"
+                          onClick={(e) => handleViewClick(e, document)}
+                          disabled={document.doc_status !== 'CHECKS COMPLETE'}
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                            },
+                          }}
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="History">
+                      <span>
+                        <IconButton
+                          size="small"
+                          disabled
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                            },
+                          }}
+                        >
+                          <HistoryIcon fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Edit">
+                      <IconButton
+                        size="small"
+                        onClick={(e) => handleEditClick(e, document)}
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                          },
+                        }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
@@ -310,7 +366,11 @@ const DocumentList: React.FC = () => {
 
       <UploadDialog 
         open={uploadDialogOpen} 
-        onClose={() => setUploadDialogOpen(false)} 
+        onClose={() => setUploadDialogOpen(false)}
+        onUpload={(file) => {
+          console.log('Uploading file:', file);
+          setUploadDialogOpen(false);
+        }}
       />
     </Box>
   );

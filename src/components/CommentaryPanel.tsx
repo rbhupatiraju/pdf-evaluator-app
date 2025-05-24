@@ -21,16 +21,16 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 interface CheckItem {
   id: string;
-  title: string;
-  descriptions: string[];
-  status: 'pass' | 'fail';
-  feedback?: 'positive' | 'negative' | null;
+  check_title: string;
+  check_descriptions: string[];
+  check_status: 'pass' | 'fail';
+  check_feedback?: 'positive' | 'negative' | null;
 }
 
 interface Section {
   id: string;
-  title: string;
-  pageNumber: number;
+  section_title: string;
+  page_number: number;
   checks: CheckItem[];
 }
 
@@ -47,7 +47,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
 }) => {
   const [localSections, setLocalSections] = useState<Section[]>(sections);
 
-  const getStatusColor = (status: CheckItem['status']): string => {
+  const getStatusColor = (status: CheckItem['check_status']): string => {
     return status === 'pass' ? '#4caf50' : '#f44336';
   };
 
@@ -61,7 +61,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
               if (check.id === checkId) {
                 return {
                   ...check,
-                  feedback: check.feedback === feedback ? null : feedback
+                  check_feedback: check.check_feedback === feedback ? null : feedback
                 };
               }
               return check;
@@ -100,7 +100,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
-                  onClick={(e) => handleSectionClick(e, section.pageNumber)}
+                  onClick={(e) => handleSectionClick(e, section.page_number)}
                   sx={{
                     '&:hover': {
                       bgcolor: 'rgba(0, 0, 0, 0.04)'
@@ -109,13 +109,15 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                     <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-                      {section.title}
+                      {section.section_title}
                     </Typography>
-                    <Chip 
-                      label={`Page ${section.pageNumber}`}
-                      size="small"
-                      sx={{ ml: 2 }}
-                    />
+                    {section.page_number && (
+                      <Chip 
+                        label={`Page ${section.page_number}`}
+                        size="small"
+                        sx={{ ml: 2 }}
+                      />
+                    )}
                   </Box>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -123,7 +125,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                     {section.checks.map((check) => (
                       <Card 
                         key={check.id}
-                        onClick={(e) => handleSectionClick(e, section.pageNumber)}
+                        onClick={(e) => handleSectionClick(e, section.page_number)}
                         sx={{ 
                           cursor: 'pointer',
                           '&:hover': {
@@ -138,7 +140,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                                 width: 6, 
                                 height: 6, 
                                 borderRadius: '50%', 
-                                bgcolor: getStatusColor(check.status),
+                                bgcolor: getStatusColor(check.check_status),
                                 flexShrink: 0
                               }} 
                             />
@@ -150,7 +152,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                                 fontWeight: 500
                               }}
                             >
-                              {check.title}
+                              {check.check_title}
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                               <Tooltip title="Helpful">
@@ -158,7 +160,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                                   size="small" 
                                   sx={{ 
                                     p: 0.5,
-                                    color: check.feedback === 'positive' ? 'success.main' : 'inherit'
+                                    color: check.check_feedback === 'positive' ? 'success.main' : 'inherit'
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -173,7 +175,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                                   size="small" 
                                   sx={{ 
                                     p: 0.5,
-                                    color: check.feedback === 'negative' ? 'error.main' : 'inherit'
+                                    color: check.check_feedback === 'negative' ? 'error.main' : 'inherit'
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -186,7 +188,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                               <IconButton 
                                 size="small" 
                                 sx={{ p: 0.5 }}
-                                onClick={(e) => handleSectionClick(e, section.pageNumber)}
+                                onClick={(e) => handleSectionClick(e, section.page_number)}
                               >
                                 <NavigateNextIcon sx={{ fontSize: '1rem' }} />
                               </IconButton>
@@ -207,7 +209,7 @@ const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
                               }
                             }}
                           >
-                            {check.descriptions.map((description, index) => (
+                            {check.check_descriptions.map((description, index) => (
                               <ListItem 
                                 key={index} 
                                 sx={{ 
